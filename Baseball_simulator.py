@@ -388,7 +388,7 @@ if __name__ == "__main__":
     Player("Austin Wells", 0.215, 0.479, 0.281),
     Player("Oswaldo Cabrera", 0.243, 0.387, 0.287),
     Player("Jorbit Vivas", 0.217, 0.478, 0.419),
-]
+] 
     # Crear un bullpen completo de lanzadores con roles y resistencia
     bullpen = [
     # Nombre, ERA, WHIP, K/9, Rol, Resistencia
