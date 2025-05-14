@@ -76,6 +76,7 @@ class BaseballSimulator:
         self.player_stats = {player.name: PlayerStats(name=player.name) for player in lineup}
         self.pitcher_stats = {pitcher.name: PitcherStats(name=pitcher.name) for pitcher in bullpen}
         self.current_game_pitcher = None
+        self.batter_index = 0  # Nuevo: índice para el orden al bat
     
     def _select_pitcher(self, inning: int, runs_allowed: int) -> Pitcher:
         """
@@ -217,8 +218,9 @@ class BaseballSimulator:
         pitcher_stats.innings_pitched += 1
         
         while outs < 3:
-            # Seleccionar el siguiente bateador
-            batter = self.lineup[np.random.randint(0, len(self.lineup))]
+            # Seleccionar el siguiente bateador en orden
+            batter = self.lineup[self.batter_index]
+            self.batter_index = (self.batter_index + 1) % len(self.lineup)
             
             # Simular el resultado del turno al bat
             result = self._simulate_at_bat(batter, pitcher_factor)
@@ -372,24 +374,6 @@ class BaseballSimulator:
                 }
         return stats
 
-    def get_pitcher_statistics(self) -> Dict[str, Dict[str, float]]:
-        """
-        Retorna las estadísticas calculadas para cada pitcher.
-        """
-        stats = {}
-        for pitcher in self.bullpen:
-            pitcher_stats = self.pitcher_stats[pitcher.name]
-            if pitcher_stats.innings_pitched > 0:
-                stats[pitcher.name] = {
-                    'era': (pitcher_stats.earned_runs * 9) / pitcher_stats.innings_pitched,
-                    'whip': (pitcher_stats.hits_allowed + pitcher_stats.walks_allowed) / pitcher_stats.innings_pitched,
-                    'k_per_9': (pitcher_stats.strikeouts * 9) / pitcher_stats.innings_pitched,
-                    'win_pct': pitcher_stats.wins / (pitcher_stats.wins + pitcher_stats.losses) if (pitcher_stats.wins + pitcher_stats.losses) > 0 else 0,
-                    'runners_scored_pct': pitcher_stats.runs_with_runners / pitcher_stats.runners_on_base if pitcher_stats.runners_on_base > 0 else 0,
-                    'strikeout_rate': pitcher_stats.strikeouts / (pitcher_stats.innings_pitched * 3)
-                }
-        return stats
-
 # Ejemplo de uso
 if __name__ == "__main__":
     # Crear una alineación completa de jugadores con estadísticas reales
@@ -430,16 +414,3 @@ if __name__ == "__main__":
     for carreras, frecuencia in zip(resultados['bins'], resultados['distribucion']):
         print(f"{carreras} carreras: {frecuencia} veces")
     
-    # Imprimir estadísticas de la alineación
-    print("\nEstadísticas de la Alineación:")
-    print("Nombre\t\tPromedio\tSlugging\tOBP")
-    print("-" * 50)
-    for jugador in lineup:
-        print(f"{jugador.name}\t{jugador.batting_avg:.3f}\t\t{jugador.slugging:.3f}\t\t{jugador.obp:.3f}")
-    
-    # Imprimir estadísticas del bullpen
-    print("\nEstadísticas del Bullpen:")
-    print("Nombre\t\tERA\t\tWHIP\t\tK/9\tRol\t\tResistencia")
-    print("-" * 70)
-    for pitcher in bullpen:
-        print(f"{pitcher.name}\t{pitcher.era:.2f}\t\t{pitcher.whip:.2f}\t\t{pitcher.k_per_9:.1f}\t{pitcher.role.value}\t{pitcher.stamina:.1f}")
