@@ -124,15 +124,14 @@ if __name__ == "__main__":
     ]
     # Crear un bullpen completo de lanzadores con roles y resistencia
     bullpen = [
-        # Nombre, ERA, WHIP, K/9, Rol, Resistencia
-        Pitcher("Bryan Woo", 3.25, 0.92, 8.93, PitcherRole.STARTER, 6.0),
-        Pitcher("Gabe Speier", 2.30, 0.96, 10.54, PitcherRole.MIDDLE_RELIEF, 1.0),
-        Pitcher("Matt Brash", 0.00, 1.36, 12.27, PitcherRole.MIDDLE_RELIEF, 1.0),
-        Pitcher("Andrés Muñoz", 0.00, 0.83, 12.32, PitcherRole.CLOSER, 1.0),
-        Pitcher("Carlos Vargas", 4.00, 1.67, 9.75, PitcherRole.MIDDLE_RELIEF, 1.0),
-        Pitcher("Casey Legumina", 5.40, 1.00, 6.75, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Taj Bradley", 4.24, 1.26, 6.75, PitcherRole.STARTER, 6.0),
+        Pitcher("Mason Montgomery", 4.11, 1.11, 11.74, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Manuel Rodríguez", 2.29, 0.92, 8.68, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Mason Englert", 6.00, 1.50, 9.00, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Edwin Uceta", 5.60, 1.53, 8.40, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Pete Fairbanks", 2.65, 1.29, 9.00, PitcherRole.CLOSER, 1.0),
     ]
     
     # Crear y ejecutar simulación
     simulator = BaseballSimulator(lineup, bullpen)
-    visualize_simulation(simulator, titulo="Yankees vs. Mariners 14 de mayo")
+    visualize_simulation(simulator, titulo="Yankees vs. Rays Juego 3")

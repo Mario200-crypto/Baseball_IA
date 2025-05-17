@@ -448,11 +448,10 @@ if __name__ == "__main__":
     # Crear un bullpen completo de lanzadores con roles y resistencia
     bullpen = [
     # Nombre, ERA, WHIP, K/9, Rol, Resistencia
-    Pitcher("Luis Severino", 4.70, 1.32, 6.71, PitcherRole.STARTER, 7.0),
-    Pitcher("Mitch Spence", 5.11, 1.58, 9.12, PitcherRole.MIDDLE_RELIEF, 2.0),
-    Pitcher("Elvis Alvarado", 10.80, 2.40, 10.80, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("T.J. McFarland", 5.23, 1.74, 3.60, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Hogan Harris", 4.38, 1.38, 10.22, PitcherRole.MIDDLE_RELIEF, 2.0),
+    Pitcher("Tylor Megill", 3.10, 1.25, 11.51, PitcherRole.STARTER, 6.0),
+    Pitcher("Max Kranick", 3.65, 0.97, 6.48, PitcherRole.MIDDLE_RELIEF, 1.0),
+    Pitcher("José Buttó", 3.13, 1.43, 8.10, PitcherRole.MIDDLE_RELIEF, 1.0),
+    Pitcher("Dedniel Núñez", 10.13, 1.88, 10.13, PitcherRole.MIDDLE_RELIEF, 1.0),
 ]
 
     # Crear el simulador con pesos personalizados de bateadores
