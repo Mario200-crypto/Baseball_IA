@@ -14,7 +14,12 @@ class BaseballGeneticOptimizer:
                  crossover_rate: float = 0.8,
                  elitism_count: int = 2):
         self.lineup = lineup
-        self.bullpen_realdata_list = bullpen_realdata_list
+        # Filtrar bullpens vacíos para evitar errores
+        self.bullpen_realdata_list = [
+            (bullpen, real_data)
+            for (bullpen, real_data) in bullpen_realdata_list
+            if bullpen and len(bullpen) > 0
+        ]
         self.population_size = population_size
         self.generations = generations
         self.mutation_rate = mutation_rate
@@ -486,92 +491,101 @@ if __name__ == "__main__":
     ]
     bullpen3 = [
     # Nombre, ERA, WHIP, K/9, Rol, Resistencia
-    Pitcher("Emerson Hancock", 6.91, 1.71, 6.91, PitcherRole.STARTER, 5.0),
-    Pitcher("Casey Legumina", 2.08, 1.15, 7.62, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Eduard Bazardo", 4.74, 1.21, 5.65, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Troy Taylor", 12.00, 2.17, 3.00, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Emerson Hancock", 6.91, 1.71, 6.91, PitcherRole.STARTER, 5.0),
+        Pitcher("Casey Legumina", 2.08, 1.15, 7.62, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Eduard Bazardo", 4.74, 1.21, 5.65, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Troy Taylor", 12.00, 2.17, 3.00, PitcherRole.MIDDLE_RELIEF, 1.0),
 ]
 
     bullpen4 = [
-    Pitcher("Dylan Cease", 4.60, 1.34, 11.11, PitcherRole.STARTER, 6.0),
-    Pitcher("Jason Adam", 1.61, 0.94, 11.28, PitcherRole.SETUP, 1.0),
-    Pitcher("Robert Suarez", 2.84, 0.79, 9.95, PitcherRole.CLOSER, 1.0),
-    Pitcher("Jeremiah Estrada", 2.75, 0.97, 12.43, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Dylan Cease", 4.60, 1.34, 11.11, PitcherRole.STARTER, 6.0),
+        Pitcher("Jason Adam", 1.61, 0.94, 11.28, PitcherRole.SETUP, 1.0),
+        Pitcher("Robert Suarez", 2.84, 0.79, 9.95, PitcherRole.CLOSER, 1.0),
+        Pitcher("Jeremiah Estrada", 2.75, 0.97, 12.43, PitcherRole.MIDDLE_RELIEF, 1.0),
     ]
     bullpen5 = [
         # Nombre, ERA, WHIP, K/9, Rol, Resistencia
-    Pitcher("JP Sears", 2.80, 1.00, 7.20, PitcherRole.STARTER, 6.0),
-    Pitcher("Justin Sterner", 2.21, 1.08, 11.07, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Grant Holman", 0.75, 1.00, 4.50, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Tyler Ferguson", 1.96, 1.04, 7.91, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Mason Miller", 4.70, 0.98, 17.63, PitcherRole.CLOSER, 1.0),
+        Pitcher("JP Sears", 2.80, 1.00, 7.20, PitcherRole.STARTER, 6.0),
+        Pitcher("Justin Sterner", 2.21, 1.08, 11.07, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Grant Holman", 0.75, 1.00, 4.50, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Tyler Ferguson", 1.96, 1.04, 7.91, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Mason Miller", 4.70, 0.98, 17.63, PitcherRole.CLOSER, 1.0),
 
     ]
     #
     bullpen6 = [
-    Pitcher("Michael King", 2.32, 0.99, 10.01, PitcherRole.STARTER, 6.0),
-    Pitcher("Adrián Morejón", 3.57, 1.13, 7.50, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Wandy Peralta", 7.04, 1.57, 6.46, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Ryan Bergert", 0.00, 0.25, 4.50, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Michael King", 2.32, 0.99, 10.01, PitcherRole.STARTER, 6.0),
+        Pitcher("Adrián Morejón", 3.57, 1.13, 7.50, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Wandy Peralta", 7.04, 1.57, 6.46, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Ryan Bergert", 0.00, 0.25, 4.50, PitcherRole.MIDDLE_RELIEF, 1.0),
     ]
     #yankees vs rays 1
     bullpen7 = [
-    Pitcher("Taj Bradley", 4.24, 1.26, 6.75, PitcherRole.STARTER, 6.0),
-    Pitcher("Mason Montgomery", 4.11, 1.11, 11.74, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Manuel Rodríguez", 2.29, 0.92, 8.68, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Mason Englert", 6.00, 1.50, 9.00, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Edwin Uceta", 5.60, 1.53, 8.40, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Pete Fairbanks", 2.65, 1.29, 9.00, PitcherRole.CLOSER, 1.0),
+        Pitcher("Taj Bradley", 4.24, 1.26, 6.75, PitcherRole.STARTER, 6.0),
+        Pitcher("Mason Montgomery", 4.11, 1.11, 11.74, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Manuel Rodríguez", 2.29, 0.92, 8.68, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Mason Englert", 6.00, 1.50, 9.00, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Edwin Uceta", 5.60, 1.53, 8.40, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Pete Fairbanks", 2.65, 1.29, 9.00, PitcherRole.CLOSER, 1.0),
     ]
     #yankees vs rays 2
     bullpen8 = [
-    Pitcher("Zack Littell", 4.31, 1.12, 5.30, PitcherRole.STARTER, 6.0),
-    Pitcher("Garrett Cleavinger", 2.25, 0.75, 10.00, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Edwin Uceta", 5.60, 1.53, 8.40, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Pete Fairbanks", 2.65, 1.29, 8.47, PitcherRole.CLOSER, 1.0),
+        Pitcher("Zack Littell", 4.31, 1.12, 5.30, PitcherRole.STARTER, 6.0),
+        Pitcher("Garrett Cleavinger", 2.25, 0.75, 10.00, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Edwin Uceta", 5.60, 1.53, 8.40, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Pete Fairbanks", 2.65, 1.29, 8.47, PitcherRole.CLOSER, 1.0),
     ]
     bullpen9 = [
         #yankees vs rays 3
-    Pitcher("Ryan Pepiot", 3.93, 1.29, 8.05, PitcherRole.STARTER, 6.0),
-    Pitcher("Mason Montgomery", 4.11, 1.11, 11.74, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Eric Orze", 1.10, 1.35, 4.96, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Manuel Rodríguez", 2.65, 1.06, 8.00, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Garrett Cleavinger", 2.25, 0.75, 10.00, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Ryan Pepiot", 3.93, 1.29, 8.05, PitcherRole.STARTER, 6.0),
+        Pitcher("Mason Montgomery", 4.11, 1.11, 11.74, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Eric Orze", 1.10, 1.35, 4.96, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Manuel Rodríguez", 2.65, 1.06, 8.00, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Garrett Cleavinger", 2.25, 0.75, 10.00, PitcherRole.MIDDLE_RELIEF, 1.0),
     ]
     bullpen10 = [
         #yankees vs baltimore 1
-    Pitcher("Cade Povich", 5.55, 1.54, 7.32, PitcherRole.STARTER, 5.0),
-    Pitcher("Seranthony Domínguez", 4.26, 1.34, 6.80, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Keegan Akin", 3.26, 1.34, 8.40, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Yennier Canó", 4.40, 1.40, 6.40, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Gregory Soto", 4.85, 1.62, 10.38, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Bryan Baker", 2.08, 1.04, 10.38, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Félix Bautista", 2.25, 1.00, 11.25, PitcherRole.CLOSER, 1.0),
+        Pitcher("Cade Povich", 5.55, 1.54, 7.32, PitcherRole.STARTER, 5.0),
+        Pitcher("Seranthony Domínguez", 4.26, 1.34, 6.80, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Keegan Akin", 3.26, 1.34, 8.40, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Yennier Canó", 4.40, 1.40, 6.40, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Gregory Soto", 4.85, 1.62, 10.38, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Bryan Baker", 2.08, 1.04, 10.38, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Félix Bautista", 2.25, 1.00, 11.25, PitcherRole.CLOSER, 1.0),
     ]
     bullpen11 = [
         #yankees vs blue jays 1
-    Pitcher("Chris Bassitt", 3.16, 1.27, 9.64, PitcherRole.STARTER, 6.0),
-    Pitcher("Brendon Little", 1.86, 1.14, 13.5, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Yariel Rodríguez", 4.26, 1.21, 8.83, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Chad Green", 3.38, 1.07, 13.43, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Chris Bassitt", 3.16, 1.27, 9.64, PitcherRole.STARTER, 6.0),
+        Pitcher("Brendon Little", 1.86, 1.14, 13.5, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Yariel Rodríguez", 4.26, 1.21, 8.83, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Chad Green", 3.38, 1.07, 13.43, PitcherRole.MIDDLE_RELIEF, 1.0),
     ]
     bullpen12 = [
         #yankees vs blue jays 2
-    Pitcher("Max Fried", 1.11, 0.94, 8.19, PitcherRole.STARTER, 6.0),
-    Pitcher("Yerry De Los Santos", 0.00, 1.00, 9.00, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Tyler Matzek", 5.40, 3.30, 9.00, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Max Fried", 1.11, 0.94, 8.19, PitcherRole.STARTER, 6.0),
+        Pitcher("Yerry De Los Santos", 0.00, 1.00, 9.00, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Tyler Matzek", 5.40, 3.30, 9.00, PitcherRole.MIDDLE_RELIEF, 1.0),
 
     ]
     bullpen13 = [
         #yankees vs blue jays 3
-    Pitcher("José Berríos", 4.33, 1.42, 8.48, PitcherRole.STARTER, 6.0),
-    Pitcher("Brendon Little", 1.86, 1.14, 13.5, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Yimi García", 3.71, 1.12, 12.71, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Mason Fluharty", 2.16, 0.60, 8.64, PitcherRole.MIDDLE_RELIEF, 1.0),
-    Pitcher("Jeff Hoffman", 6.05, 1.19, 14.42, PitcherRole.CLOSER, 1.0),
+        Pitcher("José Berríos", 4.33, 1.42, 8.48, PitcherRole.STARTER, 6.0),
+        Pitcher("Brendon Little", 1.86, 1.14, 13.5, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Yimi García", 3.71, 1.12, 12.71, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Mason Fluharty", 2.16, 0.60, 8.64, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Jeff Hoffman", 6.05, 1.19, 14.42, PitcherRole.CLOSER, 1.0),
     ]
-    bullpen14 = []
-    bullpen15 = []
+    bullpen14 = [
+        Pitcher("Luis L. Ortiz", 4.78, 1.36, 10.18, PitcherRole.STARTER, 6.0),
+        Pitcher("Joey Cantillo", 4.12, 1.63, 11.89, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Zak Kent", 5.40, 2.00, 10.80, PitcherRole.MIDDLE_RELIEF, 1.0),
+    ]
+    bullpen15 = [
+        Pitcher("Tanner Bibee", 4.06, 1.29, 8.75, PitcherRole.STARTER, 6.0),
+        Pitcher("Tim Herrin", 4.50, 1.38, 10.13, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Hunter Gaddis", 0.53, 1.24, 12.71, PitcherRole.MIDDLE_RELIEF, 1.0),
+        Pitcher("Cade Smith", 2.75, 1.32, 12.81, PitcherRole.MIDDLE_RELIEF, 1.0),
+    ]
     real_game_data1 = {'promedio': 1, 'desviacion': 0, 'minimo': 1, 'maximo': 1}
     real_game_data2 = {'promedio': 12, 'desviacion': 0, 'minimo': 12, 'maximo': 12}
     real_game_data3 = {'promedio': 11, 'desviacion': 0, 'minimo': 11, 'maximo': 11}
@@ -585,8 +599,9 @@ if __name__ == "__main__":
     real_game_data11 = {'promedio': 5, 'desviacion': 0, 'minimo': 5, 'maximo': 5}
     real_game_data12 = {'promedio': 11, 'desviacion': 0, 'minimo': 11, 'maximo': 11}
     real_game_data13 = {'promedio': 2, 'desviacion': 0, 'minimo': 2, 'maximo': 2}
-    real_game_data14 = {'promedio': 0, 'desviacion': 0, 'minimo': 0, 'maximo': 0}
-    real_game_data15 = {'promedio': 0, 'desviacion': 0, 'minimo': 0, 'maximo': 0}
+    real_game_data14 = {'promedio': 5, 'desviacion': 0, 'minimo': 5, 'maximo': 5}
+    real_game_data15 = {'promedio': 2, 'desviacion': 0, 'minimo': 2, 'maximo': 2}
+
     bullpen_realdata_list = [
         (bullpen1, real_game_data1),
         (bullpen2, real_game_data2),
@@ -603,6 +618,13 @@ if __name__ == "__main__":
         (bullpen13, real_game_data13),
         (bullpen14, real_game_data14),
         (bullpen15, real_game_data15),
+    ]
+
+    # Filtrar bullpens vacíos o inválidos ANTES de crear el optimizador
+    bullpen_realdata_list = [
+        (bullpen, real_data)
+        for (bullpen, real_data) in bullpen_realdata_list
+        if bullpen and len(bullpen) > 0 and any(getattr(p, 'current_stamina', 1) > 0 for p in bullpen)
     ]
 
     # Crear el optimizador con los hiperparámetros mejorados

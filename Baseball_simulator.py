@@ -82,10 +82,15 @@ class BaseballSimulator:
         """
         Selecciona el siguiente pitcher basado en el inning y las carreras permitidas.
         """
-        available_pitchers = [p for p in self.bullpen if p.can_pitch()]
+        available_pitchers = [p for p in self.bullpen if getattr(p, 'current_stamina', 1) > 0]
         
         if not available_pitchers:
-            raise Exception("No hay pitchers disponibles")
+            # Si no hay pitchers disponibles, mantener el actual y darle 1 de stamina
+            if hasattr(self, 'current_pitcher') and self.current_pitcher is not None:
+                self.current_pitcher.current_stamina = 1
+                return self.current_pitcher
+            else:
+                raise Exception("No hay pitchers disponibles y no hay pitcher actual")
         
         # Si es el primer inning, usar el abridor
         if inning == 1:
@@ -132,19 +137,19 @@ class BaseballSimulator:
         Retorna un factor de ajuste para las probabilidades de los bateadores.
         """
         # Factor base basado en ERA (más bajo es mejor)
-        era_factor = 5.0 / pitcher.era if pitcher.era > 0 else 1.0
+        era_factor = 4.62 / pitcher.era if pitcher.era > 0 else 1.0
         
         # Factor de WHIP (más bajo es mejor)
-        whip_factor = 1.5 / pitcher.whip if pitcher.whip > 0 else 1.0
+        whip_factor = 0.96 / pitcher.whip if pitcher.whip > 0 else 1.0
         
         # Factor de K/9 (más alto es mejor)
-        k_factor = pitcher.k_per_9 / 9.0
+        k_factor = pitcher.k_per_9 / 1.52
         
         # Factor de resistencia (afecta más cuando está bajo)
-        stamina_factor = pitcher.current_stamina ** 2  # Cuadrático para mayor impacto
+        stamina_factor = pitcher.current_stamina ** 1.32  # Cuadrático para mayor impacto
         
         # Factor de presión (afecta más en situaciones importantes)
-        pressure_factor = 1.0
+        pressure_factor = 0.94
         if self.innings_pitched >= 6:  # Lanzando muchas entradas
             pressure_factor *= 0.9
         if self.runs_allowed > 3:  # Permitiendo muchas carreras
@@ -374,6 +379,57 @@ class BaseballSimulator:
                 }
         return stats
 
+class CustomBaseballSimulator(BaseballSimulator):
+    def __init__(self, lineup, bullpen):
+        super().__init__(lineup, bullpen)
+        self.obp_weight = 1.61
+        self.avg_weight = 0.81
+        self.slg_weight = 1.41
+        self.clutch_factor = 1.35
+
+    def _simulate_at_bat(self, batter: Player, pitcher_factor: float) -> str:
+        # Ajustar probabilidades basado en los pesos personalizados
+        adjusted_obp = min((batter.obp * self.obp_weight) / pitcher_factor, 0.55)
+        adjusted_avg = min((batter.batting_avg * self.avg_weight) / pitcher_factor, 0.42)
+        adjusted_slg = min((batter.slugging * self.slg_weight) / pitcher_factor, 1.0)
+
+        # Clutch: si hay corredores en base, aumentar ligeramente la probabilidad de hit
+        clutch_multiplier = self.clutch_factor if sum(getattr(self, 'bases', [False, False, False])) > 0 else 1.0
+        adjusted_obp *= clutch_multiplier
+        adjusted_avg *= clutch_multiplier
+        adjusted_slg *= clutch_multiplier
+
+        # Calcular probabilidad de strikeout basada en K/9 del pitcher
+        k_prob = min((self.current_pitcher.k_per_9 / 27.0) * pitcher_factor, 0.25)
+        # Calcular probabilidad de walk basada en WHIP del pitcher
+        walk_prob = max(min((self.current_pitcher.whip - 1.0) * 0.15, 0.10), 0)
+        # Probabilidad de hit es la diferencia entre OBP y BB
+        hit_prob = max(adjusted_obp - walk_prob, 0)
+        # Probabilidad de out es el resto
+        out_prob = max(1.0 - (k_prob + walk_prob + hit_prob), 0)
+
+        rand = np.random.random()
+        if rand < k_prob:
+            return 'out'
+        elif rand < k_prob + walk_prob:
+            return 'walk'
+        elif rand < k_prob + walk_prob + hit_prob:
+            # Determinar tipo de hit según AVG y SLG
+            hit_type = np.random.random()
+            single_prob = min(adjusted_avg / adjusted_obp, 0.85)
+            double_prob = min((adjusted_slg - adjusted_avg) / adjusted_slg, 0.10)
+            triple_prob = 0.03  # Fijo, poco frecuente
+            if hit_type < single_prob:
+                return 'single'
+            elif hit_type < single_prob + double_prob:
+                return 'double'
+            elif hit_type < single_prob + double_prob + triple_prob:
+                return 'triple'
+            else:
+                return 'homerun'
+        else:
+            return 'out'
+
 # Ejemplo de uso
 if __name__ == "__main__":
     # Crear una alineación completa de jugadores con estadísticas reales
@@ -399,18 +455,18 @@ if __name__ == "__main__":
     Pitcher("Hogan Harris", 4.38, 1.38, 10.22, PitcherRole.MIDDLE_RELIEF, 2.0),
 ]
 
-    
-    # Crear el simulador
+    # Crear el simulador con pesos personalizados de bateadores
     simulator = BaseballSimulator(lineup, bullpen)
-    
-    # Simular 1000 veces el mismo partido
     resultados = simulator.monte_carlo_game_simulation(num_simulations=1000, num_innings=9)
-    
-    # Ver los resultados
     print(f"Promedio de carreras: {resultados['promedio']:.2f} ± {resultados['desviacion']:.2f}")
     print(f"Rango de carreras: {resultados['minimo']} - {resultados['maximo']}")
-    
-    # Ver la distribución completa
     for carreras, frecuencia in zip(resultados['bins'], resultados['distribucion']):
         print(f"{carreras} carreras: {frecuencia} veces")
-    
+
+    print("\nSimulación con pesos personalizados de bateadores:")
+    custom_simulator = CustomBaseballSimulator(lineup, bullpen)
+    resultados_custom = custom_simulator.monte_carlo_game_simulation(num_simulations=1000, num_innings=9)
+    print(f"Promedio de carreras: {resultados_custom['promedio']:.2f} ± {resultados_custom['desviacion']:.2f}")
+    print(f"Rango de carreras: {resultados_custom['minimo']} - {resultados_custom['maximo']}")
+    for carreras, frecuencia in zip(resultados_custom['bins'], resultados_custom['distribucion']):
+        print(f"{carreras} carreras: {frecuencia} veces")
